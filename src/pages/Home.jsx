@@ -20,11 +20,19 @@ function Home() {
         <div className="flex flex-row justify-center align-middle gap-5 mt-10">
             { vets.map((vet)=>(<VetCard key={vet.id} name={vet.name} des={vet.about}  />)) }
         </div>
+
+        <div className="flex justify-center items-center">
+        <a className="text-pink-500 text-2xl">See more..</a>
+        </div>
+
         <hr className="border-t-2 border-gray-300 my-4" />
         <Slider2 />
         <NearbyYou />
         <div className="flex flex-row justify-center align-middle gap-5 mt-10">
             { vets.map((vet)=>(<VetCard key={vet.id} name={vet.name} des={vet.about}  />)) }
+        </div>
+        <div className="flex justify-center items-center">
+        <a className="text-pink-500 text-2xl">See more..</a>
         </div>
         <Footer />
 

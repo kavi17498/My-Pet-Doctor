@@ -1,6 +1,7 @@
 import React from 'react'
-import Navbar from './components/Navbar'
 import Home from './pages/Home'
+import ReactDOM from "react-dom";
+
 
 function App() {
   return (
