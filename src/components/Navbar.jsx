@@ -10,7 +10,7 @@ function Navbar() {
         <div className="w-10 rounded-full">
           <img
             alt="Tailwind CSS Navbar component"
-            src={profilePic} />
+            src={profilePic} />  
         </div>
       </div>
     <a className="btn btn-ghost text-xl">My Pet Doctor</a>

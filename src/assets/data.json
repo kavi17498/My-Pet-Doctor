@@ -1,0 +1,21 @@
+[
+    {
+      "id": 1,
+      "name": "Dr. Smith",
+      "specialization": "Surgery",
+      "about": "Dr. Smith has over 15 years of experience in veterinary surgery, specializing in complex procedures and emergency care."
+    },
+    {
+      "id": 2,
+      "name": "Dr. Johnson",
+      "specialization": "Dentistry",
+      "about": "Dr. Johnson is an expert in pet dental care, providing advanced treatments for oral health and hygiene."
+    },
+    {
+      "id": 3,
+      "name": "Dr. Williams",
+      "specialization": "Dermatology",
+      "about": "Dr. Williams focuses on treating skin conditions in pets, offering solutions for allergies, infections, and more."
+    }
+  ]
+  
