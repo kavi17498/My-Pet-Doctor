@@ -5,6 +5,7 @@ import './index.css';
 import App from './App.jsx';
 import Home from './pages/Home.jsx';
 import AboutUs from './pages/AboutUs.jsx';
+import AddApet from './pages/AddAPet.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -12,6 +13,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/addpet" element={<AddApet />} />
       </Routes>
     </Router>
   </StrictMode>
