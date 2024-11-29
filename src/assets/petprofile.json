@@ -1,0 +1,17 @@
+{
+    "users": [
+      {
+        "name": "John Doe",
+        "email": "johndoe@example.com",
+        "phone": "+1234567890",
+        "profilePhotoUrl": "https://example.com/images/johndoe.jpg"
+      },
+      {
+        "name": "Jane Smith",
+        "email": "janesmith@example.com",
+        "phone": "+9876543210",
+        "profilePhotoUrl": "https://example.com/images/janesmith.jpg"
+      }
+    ]
+  }
+  
