@@ -22,8 +22,7 @@ function Footer() {
             <li><a className="text-white">Blog</a></li>
             <li><a className="text-white">About us</a></li>
             <li><a className="text-white">Contact Us</a></li>
-            <li><a className="text-white">Log in</a></li>
-            <li><a className="text-white">Sign Up</a></li>
+           
           </ul>
         </div>
       </div>

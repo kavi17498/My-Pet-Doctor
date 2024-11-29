@@ -17,6 +17,7 @@ import PetOwnerProfile from './pages/PetOwnerProfile.jsx';
 import SignUp from './pages/SignUp.jsx';
 import Veterinarins from './pages/Veterinarins.jsx';
 import VetProfile from './pages/VetProfile.jsx';
+import AddVeterinarian from './pages/Addveterinarin.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/SignUp' element={<SignUp />} />
         <Route path='/Veterinarins' element={<Veterinarins />} />
         <Route path='/VetProfile' element={<VetProfile />} />
+        <Route path='/addvet' element={<AddVeterinarian />} />
       
       </Routes>
     </Router>
