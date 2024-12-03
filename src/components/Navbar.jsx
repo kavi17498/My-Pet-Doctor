@@ -1,57 +1,95 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import { auth } from '../firebaseconfig'; // Import Firebase auth
-import { signOut } from 'firebase/auth'; // Import signOut from Firebase
+import { Link } from 'react-router-dom';
+import { auth } from '../firebaseconfig';
+import { signOut } from 'firebase/auth';
 import profilePic from '../assets/logo.png';
 
 function Navbar() {
   const [user, setUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
 
   // Check for user authentication state
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(setUser); // Listen for authentication state changes
-    return () => unsubscribe(); // Cleanup listener on unmount
+    const unsubscribe = auth.onAuthStateChanged(setUser);
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Sign out the user from Firebase
+      await signOut(auth);
     } catch (error) {
-      console.error("Error signing out: ", error);
+      console.error('Error signing out: ', error);
     }
   };
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-          <div className="w-10 rounded-full">
-            <img alt="Profile" src={profilePic} />
+      {/* Logo and Brand */}
+      <div className="flex-1 flex items-center justify-between">
+        <div className="flex items-center">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+            <div className="w-10 rounded-full">
+              <img alt="Profile" src={profilePic} />
+            </div>
           </div>
+          <Link to="/" className="btn btn-ghost text-xl ml-2">
+            My Pet Doctor
+          </Link>
         </div>
-        <Link to="/" className="btn btn-ghost text-xl">My Pet Doctor</Link> {/* Use Link here */}
+
+        {/* Hamburger Icon for Mobile */}
+        <div className="lg:hidden">
+          <button
+            onClick={toggleMenu}
+            className="btn btn-ghost text-xl"
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? '✖️' : '☰'}
+          </button>
+        </div>
       </div>
 
-      <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/blog">Blog</Link></li>
-          <li><Link to="/about">About Us</Link></li>
-          <li><Link to="/contactus">Contact Us</Link></li>
+      {/* Links Section */}
+      <div
+        className={`flex-none lg:flex lg:items-center ${
+          isMenuOpen ? 'block' : 'hidden'
+        } lg:block`}
+      >
+        <ul className="menu menu-horizontal px-1 lg:flex-row flex-col">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/blog">Blog</Link>
+          </li>
+          <li>
+            <Link to="/about">About Us</Link>
+          </li>
+          <li>
+            <Link to="/contactus">Contact Us</Link>
+          </li>
 
           {/* Conditional rendering */}
           {!user ? (
             <>
-              <li><Link to="/login">Log in</Link></li> {/* Show login link if no user */}
-              <li><Link to="/signup">Sign Up</Link></li> {/* Show signup link if no user */}
+              <li>
+                <Link to="/login">Log in</Link>
+              </li>
+              <li>
+                <Link to="/signup">Sign Up</Link>
+              </li>
             </>
           ) : (
             <>
-              <li><Link to="/profile">Profile</Link></li> {/* Show profile link if user is logged in */}
+              <li>
+                <Link to="/PetOwnerProfile">Profile</Link>
+              </li>
               <li>
                 <button onClick={handleLogout} className="btn btn-ghost">
                   Logout
-                </button> {/* Logout button */}
+                </button>
               </li>
             </>
           )}
