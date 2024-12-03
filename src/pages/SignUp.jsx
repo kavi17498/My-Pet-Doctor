@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth function
-import { auth } from '../firebaseconfig.js'; // Import the Firebase Auth object from your firebase.js
-import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebaseconfig.js'; // Import the Firebase Auth and Firestore instances
+import { doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [address, setAddress] = useState(''); // New address state
   const [error, setError] = useState('');
-  
-  const navigate = useNavigate(); // Initialize the navigate hook
+
+  const navigate = useNavigate();
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Check if passwords match
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -24,12 +25,21 @@ function SignUp() {
 
     try {
       // Create a new user with Firebase Authentication
-      await createUserWithEmailAndPassword(auth, email, password);
-      // Redirect to the login page after successful signup
-      navigate('/login');
-      console.log('User signed up successfully');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Set user details to Firestore with the UID as the document ID
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid, // Store the user's unique ID as the document ID
+        fullName,
+        email,
+        address,
+      });
+
+      console.log('User signed up and details stored in Firestore successfully');
+      navigate('/login'); // Redirect to login page
     } catch (error) {
-      setError(error.message); // Handle any errors from Firebase Auth
+      setError(error.message); // Handle any errors
     }
   };
 
@@ -66,6 +76,18 @@ function SignUp() {
             />
           </div>
 
+          {/* Address */}
+          <div className="mb-4">
+            <label className="block text-left text-gray-700 mb-2">Address</label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full border-blue-500"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+
           {/* Password */}
           <div className="mb-4">
             <label className="block text-left text-gray-700 mb-2">Password</label>
@@ -94,18 +116,12 @@ function SignUp() {
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Sign Up Button */}
-          <button 
-            onClick={handleSubmit} 
+          <button
+            onClick={handleSubmit}
             className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
           >
             Sign Up
           </button>
-
-          {/* Continue with */}
-          <div className="mt-6">
-            <label className="block text-gray-700 mb-2">Continue with</label>
-            <img src="#" alt="Social login" className="mx-auto" />
-          </div>
 
           {/* Sign Up */}
           <p className="mt-4 text-gray-600">
