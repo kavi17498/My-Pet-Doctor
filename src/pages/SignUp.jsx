@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../firebaseconfig.js'; // Import the Firebase Auth and Firestore instances
+import { auth, db, storage } from '../firebaseconfig.js'; // Import the Firebase Auth, Firestore, and Storage instances
 import { doc, setDoc } from 'firebase/firestore'; // Import Firestore methods
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Import Firebase Storage methods
 import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
@@ -11,7 +12,7 @@ function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [address, setAddress] = useState(''); // New address state
   const [error, setError] = useState('');
-
+  const [profilePhoto, setProfilePhoto] = useState(null); // State to store the selected profile photo
   const navigate = useNavigate();
 
   // Handle form submission
@@ -28,18 +29,57 @@ function SignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Set user details to Firestore with the UID as the document ID
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid, // Store the user's unique ID as the document ID
-        fullName,
-        email,
-        address,
-      });
+      // Upload profile photo to Firebase Storage
+      let profilePhotoUrl = '';
+      if (profilePhoto) {
+        const storageRef = ref(storage, `profilePhotos/${user.uid}`);
+        const uploadTask = uploadBytesResumable(storageRef, profilePhoto);
 
-      console.log('User signed up and details stored in Firestore successfully');
-      navigate('/login'); // Redirect to login page
+        // Wait for the file to upload and get the URL
+        uploadTask.on(
+          'state_changed',
+          null,
+          (error) => {
+            console.error('Error uploading photo:', error);
+            setError('Error uploading photo');
+          },
+          async () => {
+            profilePhotoUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            // Set user details to Firestore with the UID as the document ID, including the profile photo URL
+            await setDoc(doc(db, 'users', user.uid), {
+              uid: user.uid, // Store the user's unique ID as the document ID
+              fullName,
+              email,
+              address,
+              profilePhotoUrl, // Store the URL of the uploaded profile photo
+            });
+
+            console.log('User signed up and details stored in Firestore successfully');
+            navigate('/login'); // Redirect to login page
+          }
+        );
+      } else {
+        // If no profile photo is uploaded, just store the details
+        await setDoc(doc(db, 'users', user.uid), {
+          uid: user.uid,
+          fullName,
+          email,
+          address,
+        });
+
+        console.log('User signed up without profile photo and details stored in Firestore successfully');
+        navigate('/login');
+      }
     } catch (error) {
       setError(error.message); // Handle any errors
+    }
+  };
+
+  // Handle profile photo selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePhoto(file);
     }
   };
 
@@ -109,6 +149,17 @@ function SignUp() {
               className="input input-bordered w-full border-blue-500"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
+          {/* Profile Picture Upload */}
+          <div className="mb-4">
+            <label className="block text-left text-gray-700 mb-2">Profile Picture</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="input input-bordered w-full border-blue-500"
+              onChange={handleFileChange}
             />
           </div>
 

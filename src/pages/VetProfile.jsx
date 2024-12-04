@@ -3,8 +3,17 @@ import { useParams } from 'react-router-dom';
 import { db } from '../firebaseconfig'; // Import Firestore instance
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import Navbar from '../components/Navbar'; // Ensure Navbar is imported
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 function VetProfile() {
+  const navigate = useNavigate();
+
+  const handleMakeAppointment = () => {
+    navigate(`/bookappoinment/${id}`); // Pass the vet's ID to the appointment page
+  };
+
+
+
   const { id } = useParams(); // Get the vet ID from the URL
   const [vet, setVet] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -88,8 +97,8 @@ function VetProfile() {
                 </div>
               </div>
 
-              <button className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                Book Veterinarian
+              <button onClick={handleMakeAppointment} className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                  Make Appointment
               </button>
             </div>
           </div>
