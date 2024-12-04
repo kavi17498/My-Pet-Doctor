@@ -50,7 +50,9 @@ function Home() {
       <SelectandSerach />
       <div className="flex flex-row justify-center align-middle gap-5 mt-10">
         {veterinarians.map((vet) => (
-          <VetCard key={vet.id} name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+          <Link key={vet.id} to={`/profile/${vet.id}`}> {/* Add Link here */}
+            <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+          </Link>
         ))}
       </div>
 
@@ -63,7 +65,9 @@ function Home() {
       <NearbyYou />
       <div className="flex flex-row justify-center align-middle gap-5 mt-10">
         {veterinarians.map((vet) => (
-          <VetCard key={vet.id} name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+          <Link key={vet.id} to={`/profile/${vet.id}`}> {/* Add Link here */}
+            <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+          </Link>
         ))}
       </div>
       <div className="flex justify-center items-center">

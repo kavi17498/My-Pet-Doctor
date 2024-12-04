@@ -8,7 +8,7 @@ import AboutUs from './pages/AboutUs.jsx';
 import AddApet from './pages/AddAPet.jsx';
 import AppinmentStatus from './pages/AppinmentStatus.jsx';
 import Blog from './pages/Blog.jsx';
-import BookAppoinment from './pages/BookAppoinment.jsx';
+import MakeAppointmentPage from './pages/BookAppoinment.jsx';
 import ConfirmAppoinment from './pages/ConfirmAppoinment.jsx';
 import ContactUs from './pages/ContactUs.jsx';
 import Login from './pages/Login.jsx';
@@ -19,6 +19,7 @@ import Veterinarins from './pages/Veterinarins.jsx';
 import VetProfile from './pages/VetProfile.jsx';
 import AddVeterinarian from './pages/Addveterinarin.jsx';
 import Temp from './pages/Temp/Temp.jsx';
+import VetAppointments from './pages/ViewAppoinments.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -30,7 +31,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/addpet" element={<AddApet />} />
         <Route path='/AppoinmentStaus' element={<AppinmentStatus />} />
         <Route path='/blog' element={<Blog />} />
-        <Route path='/bookappoinment' element={<BookAppoinment />} />
+        <Route path='/bookappoinment/:id' element={<MakeAppointmentPage />} />
         <Route path='/confirmappoinment' element={<ConfirmAppoinment />} />
         <Route path='/contactus' element={<ContactUs />} />
         <Route path='/login' element={<Login />} />
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/Veterinarins' element={<Veterinarins />} />
         <Route path='/profile/:id' element={<VetProfile />} />
         <Route path='/addvet' element={<AddVeterinarian />} />
+        <Route path='/viewappoinments' element={<VetAppointments />} />
 
         <Route path='/ShowVets' element={<Temp />} />
       
