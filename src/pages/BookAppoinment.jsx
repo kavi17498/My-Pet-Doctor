@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { db } from '../firebaseconfig'; // Import Firestore instance
 import { addDoc, collection } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getVeterinarianEmail, sendAppointmentEmail } from '../api';
+import { db } from '../firebaseconfig';
 
 function MakeAppointmentPage() {
-  const { id } = useParams(); // Get the vet ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
-  
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [appointmentType, setAppointmentType] = useState('online');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    const user = getAuth().currentUser;  // Get the authenticated user's ID
+    const user = getAuth().currentUser;
     if (!user) {
       alert('You need to be logged in to make an appointment!');
       return;
@@ -23,22 +23,46 @@ function MakeAppointmentPage() {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'appointments'), {
-        vetId: id,        // Veterinarian's ID
-        userId: user.uid, // Authenticated user's ID
+      const vetEmail = await getVeterinarianEmail(id);
+      if (!vetEmail) {
+        alert('Failed to fetch veterinarian email');
+        setLoading(false);
+        return;
+      }
+
+      const payload = {
+        userEmail: user.email,
+        vetEmail,
         date,
         time,
         appointmentType,
-        status: 'pending', // Default status
+      };
+
+      const emailResponse = await sendAppointmentEmail(payload);
+      console.log('Email response:', emailResponse);
+
+      await addDoc(collection(db, 'appointments'), {
+        vetId: id,
+        userId: user.uid,
+        date,
+        time,
+        appointmentType,
+        status: 'pending',
         createdAt: new Date(),
       });
+
       alert('Appointment requested successfully!');
-      navigate(`/vet-profile/${id}`); // Navigate back to vet profile
+      navigate('/'); // Navigate to home after successful appointment
     } catch (error) {
       console.error('Error submitting appointment:', error);
       alert('Error submitting appointment.');
     }
+
     setLoading(false);
+  };
+
+  const handleCancel = () => {
+    navigate(-1); // Navigate back to the previous page
   };
 
   return (
@@ -54,7 +78,7 @@ function MakeAppointmentPage() {
             className="border p-2 rounded"
             required
           />
-          
+
           <label className="text-sm font-medium text-gray-600">Select Time</label>
           <input
             type="time"
@@ -63,7 +87,7 @@ function MakeAppointmentPage() {
             className="border p-2 rounded"
             required
           />
-          
+
           <label className="text-sm font-medium text-gray-600">Appointment Type</label>
           <select
             value={appointmentType}
@@ -74,13 +98,21 @@ function MakeAppointmentPage() {
             <option value="physical">Physical</option>
           </select>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400"
-          >
-            {loading ? 'Submitting...' : 'Request Appointment'}
-          </button>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400"
+            >
+              {loading ? 'Submitting...' : 'Request Appointment'}
+            </button>
+            <button
+              onClick={handleCancel}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     </div>

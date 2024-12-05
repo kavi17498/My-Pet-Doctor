@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';  // Import Link for routing
+import { Link } from 'react-router-dom'; // Import Link for routing
 import Navbar from '../components/Navbar';
 import Slider from '../components/Slider';
 import VetCard from '../components/VetCard';
@@ -44,35 +44,46 @@ function Home() {
   return (
     <>
       <Navbar />
-      <hr className="border-t-2 border-gray-300 my-4" />
       <Slider />
-      <hr className="border-t-2 border-gray-300 my-4" />
-      <SelectandSerach />
-      <div className="flex flex-row justify-center align-middle gap-5 mt-10">
-        {veterinarians.map((vet) => (
-          <Link key={vet.id} to={`/profile/${vet.id}`}> {/* Add Link here */}
-            <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
-          </Link>
-        ))}
+      <div className="container mx-auto px-4">
+        <hr className="border-t-2 border-gray-300 my-4" />
+        
+        <hr className="border-t-2 border-gray-300 my-4" />
+        <SelectandSerach />
+
+        {/* Responsive Grid Layout for Vet Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
+          {veterinarians.map((vet) => (
+            <Link key={vet.id} to={`/profile/${vet.id}`} className="flex justify-center">
+              <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+            </Link>
+          ))}
+        </div>
+
+        {/* "See more" link */}
+        <div className="flex justify-center items-center mt-6">
+          <Link to="/more" className="text-pink-500 text-xl hover:underline">See more..</Link>
+        </div>
+
+        <hr className="border-t-2 border-gray-300 my-4" />
+        <Slider2 />
+        <NearbyYou />
+
+        {/* Repeat Vet Card Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
+          {veterinarians.map((vet) => (
+            <Link key={vet.id} to={`/profile/${vet.id}`} className="flex justify-center">
+              <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
+            </Link>
+          ))}
+        </div>
+
+        {/* "See more" link */}
+        <div className="flex justify-center items-center mt-6">
+          <Link to="/more" className="text-pink-500 text-xl hover:underline">See more..</Link>
+        </div>
       </div>
 
-      <div className="flex justify-center items-center">
-        <a className="text-pink-500 text-2xl">See more..</a>
-      </div>
-
-      <hr className="border-t-2 border-gray-300 my-4" />
-      <Slider2 />
-      <NearbyYou />
-      <div className="flex flex-row justify-center align-middle gap-5 mt-10">
-        {veterinarians.map((vet) => (
-          <Link key={vet.id} to={`/profile/${vet.id}`}> {/* Add Link here */}
-            <VetCard name={vet.name} des={vet.qualifications} id={vet.id} propic={vet.profilePhotoUrl} />
-          </Link>
-        ))}
-      </div>
-      <div className="flex justify-center items-center">
-        <a className="text-pink-500 text-2xl">See more..</a>
-      </div>
       <Footer />
     </>
   );

@@ -8,10 +8,11 @@ function AddVeterinarian() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState(''); // Address state
-  const [qualifications, setQualifications] = useState(''); // Qualifications state
-  const [profilePhoto, setProfilePhoto] = useState(null); // Profile photo state
+  const [address, setAddress] = useState('');
+  const [qualifications, setQualifications] = useState('');
+  const [profilePhoto, setProfilePhoto] = useState(null);
   const [images, setImages] = useState([]);
+  const [locationLink, setLocationLink] = useState(''); // State for Google Maps location link
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -37,8 +38,9 @@ function AddVeterinarian() {
         name,
         email,
         phoneNumber,
-        address, // Save address
-        qualifications, // Save qualifications
+        address,
+        qualifications,
+        locationLink, // Save location link
         createdAt: new Date().toISOString(),
       });
 
@@ -62,13 +64,14 @@ function AddVeterinarian() {
       await addDoc(collection(db, `veterinarians/${vetId}/images`), { imageUrls });
       await addDoc(collection(db, `veterinarians/${vetId}/profile`), { profilePhotoUrl });
 
-      setSuccess('Veterinarian added successfully with images!');
+      setSuccess('Veterinarian added successfully with images and location!');
       setError('');
       setName('');
       setEmail('');
       setPhoneNumber('');
       setAddress('');
       setQualifications('');
+      setLocationLink('');
       setProfilePhoto(null);
       setImages([]);
     } catch (err) {
@@ -146,6 +149,19 @@ function AddVeterinarian() {
               placeholder="Enter qualifications"
               value={qualifications}
               onChange={(e) => setQualifications(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Google Maps Location Link Input */}
+          <div className="mb-4">
+            <label className="block text-left text-gray-700 mb-2">Google Maps Location Link</label>
+            <input
+              type="url"
+              className="input input-bordered w-full border-blue-500"
+              placeholder="Enter Google Maps link"
+              value={locationLink}
+              onChange={(e) => setLocationLink(e.target.value)}
               required
             />
           </div>
