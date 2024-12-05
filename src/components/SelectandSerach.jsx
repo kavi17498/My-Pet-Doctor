@@ -5,7 +5,7 @@ function SelectandSearch() {
     <div className="flex flex-col lg:flex-row items-center justify-between m-10 space-y-4 lg:space-y-0 lg:space-x-4">
       {/* Title Section */}
       <div className="lg:w-1/2 flex items-center justify-center">
-        <h2 className="text-pink-700 underline text-3xl font-bold">
+        <h2 className="text-rose-500 underline text-3xl font-bold">
           Select Veterinarians
         </h2>
       </div>

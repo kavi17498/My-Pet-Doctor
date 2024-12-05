@@ -4,7 +4,7 @@ function PetCard({ pet }) {
   const { name, species, age, imageUrl } = pet;
 
   return (
-    <div className="pet-card bg-white shadow-md rounded-lg p-4 w-64">
+    <div className="pet-card bg-white shadow-md rounded-lg p-4 w-64 mt-5">
       <img
         src={imageUrl || 'https://via.placeholder.com/150'}
         alt={`${name || 'Pet'}'s Image`}
