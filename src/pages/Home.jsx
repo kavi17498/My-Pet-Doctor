@@ -62,7 +62,7 @@ function Home() {
 
         {/* "See more" link */}
         <div className="flex justify-center items-center mt-6">
-          <Link to="/more" className="text-rose-500 text-xl font-bold   hover:underline">See more..</Link>
+          <Link to="/more" className=" font-bold text-rose-500 text-xl    hover:underline">See more..</Link>
         </div>
 
         <hr className="border-t-2 border-gray-300 my-4" />
@@ -80,7 +80,7 @@ function Home() {
 
         {/* "See more" link */}
         <div className="flex justify-center items-center mt-6">
-          <Link to="/more" className="text-pink-500 text-xl hover:underline">See more..</Link>
+          <Link to="/more" className=" font-bold text-pink-500 text-xl hover:underline">See more..</Link>
         </div>
       </div>
 
