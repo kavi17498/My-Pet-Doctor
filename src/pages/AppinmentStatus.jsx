@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { db } from '../firebaseconfig'; // Import Firestore instance
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function AppointmentStatus() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAppointments = async (userId) => {
@@ -16,10 +18,26 @@ function AppointmentStatus() {
           where('userId', '==', userId)
         );
         const querySnapshot = await getDocs(q);
-        const appointmentsData = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
+
+        const appointmentsData = await Promise.all(
+          querySnapshot.docs.map(async (docSnapshot) => {
+            const appointmentData = { ...docSnapshot.data(), id: docSnapshot.id };
+
+            // Fetch veterinarian details
+            if (appointmentData.vetId) {
+              const vetDocRef = doc(db, 'veterinarians', appointmentData.vetId);
+              const vetDoc = await getDoc(vetDocRef);
+              if (vetDoc.exists()) {
+                const vetData = vetDoc.data();
+                appointmentData.vetName = vetData.name || 'Unknown';
+                appointmentData.vetPhoneNumber = vetData.phoneNumber || 'N/A';
+              }
+            }
+
+            return appointmentData;
+          })
+        );
+
         setAppointments(appointmentsData);
       } catch (err) {
         setError('Failed to fetch appointments. Please try again later.');
@@ -58,64 +76,93 @@ function AppointmentStatus() {
     );
   }
 
-  const pendingAppointments = appointments.filter((app) => app.status === 'pending');
-  const approvedAppointments = appointments.filter((app) => app.status === 'approved');
-  const completedAppointments = appointments.filter((app) => app.status === 'completed');
-
   return (
-    <div className="flex flex-col items-center h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold mt-6">Your Appointments</h1>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-gray-500 text-white px-4 py-2 rounded mb-4 hover:bg-gray-600"
+        >
+          Back
+        </button>
+        <h1 className="text-3xl font-bold text-center mb-6">Your Appointments</h1>
 
-      <div className="p-6 mt-6 w-4/5 max-w-md">
         {appointments.length === 0 ? (
-          <p className="text-gray-600">No appointments found.</p>
+          <div className="text-center py-10">
+            <p className="text-lg text-gray-600">No appointments found.</p>
+          </div>
         ) : (
-          <>
-            {/* Pending Appointments */}
-            {pendingAppointments.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-yellow-500">Pending</h2>
-                {pendingAppointments.map((appointment) => (
-                  <div key={appointment.id} className="border p-4 mb-4 rounded shadow-sm">
-                    <p><strong>Date:</strong> {appointment.date}</p>
-                    <p><strong>Time:</strong> {appointment.time}</p>
-                    <p><strong>Type:</strong> {appointment.appointmentType}</p>
-                    <p><strong>Status:</strong> {appointment.status}</p>
-                  </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse block md:table">
+              <thead className="block md:table-header-group">
+                <tr className="border-b border-gray-200 md:table-row block md:table-row">
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Date
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Time
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Type
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Status
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Message
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Meeting Link
+                  </th>
+                  <th className="text-left p-4 font-medium text-gray-500 uppercase block md:table-cell">
+                    Veterinarian
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="block md:table-row-group">
+                {appointments.map((appointment) => (
+                  <tr
+                    key={appointment.id}
+                    className="border-b border-gray-200 md:table-row block md:table-row"
+                  >
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.date || 'N/A'}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.time || 'N/A'}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.appointmentType || 'N/A'}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.status || 'Unknown'}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.message || 'N/A'}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.meetingLink ? (
+                        <a
+                          href={appointment.meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline"
+                        >
+                          Join Meeting
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-700 block md:table-cell">
+                      {appointment.vetName || 'Unknown'} <br />
+                      {appointment.vetPhoneNumber || 'N/A'}
+                    </td>
+                  </tr>
                 ))}
-              </div>
-            )}
-
-            {/* Approved Appointments */}
-            {approvedAppointments.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-green-500">Approved</h2>
-                {approvedAppointments.map((appointment) => (
-                  <div key={appointment.id} className="border p-4 mb-4 rounded shadow-sm">
-                    <p><strong>Date:</strong> {appointment.date}</p>
-                    <p><strong>Time:</strong> {appointment.time}</p>
-                    <p><strong>Type:</strong> {appointment.appointmentType}</p>
-                    <p><strong>Status:</strong> {appointment.status}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Completed Appointments */}
-            {completedAppointments.length > 0 && (
-              <div>
-                <h2 className="text-xl font-semibold text-gray-500">Completed</h2>
-                {completedAppointments.map((appointment) => (
-                  <div key={appointment.id} className="border p-4 mb-4 rounded shadow-sm">
-                    <p><strong>Date:</strong> {appointment.date}</p>
-                    <p><strong>Time:</strong> {appointment.time}</p>
-                    <p><strong>Type:</strong> {appointment.appointmentType}</p>
-                    <p><strong>Status:</strong> {appointment.status}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
