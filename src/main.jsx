@@ -20,7 +20,9 @@ import VetProfile from './pages/VetProfile.jsx';
 import AddVeterinarian from './pages/Addveterinarin.jsx';
 import Temp from './pages/Temp/Temp.jsx';
 import VetAppointments from './pages/ViewAppoinments.jsx';
-
+import GroomingAnxiety from './blog/grooming-anxiety.jsx'; 
+import PurevaxVaccine from './blog/purevax-vaccine.jsx'; 
+import FirstVetVisit from './blog/first-vet-visit.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -31,6 +33,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="/addpet" element={<AddApet />} />
         <Route path='/AppoinmentStaus' element={<AppinmentStatus />} />
         <Route path='/blog' element={<Blog />} />
+        <Route path='/blog/grooming-anxiety' element={<GroomingAnxiety />} />
+        <Route path='/blog/purevax-vaccine' element={<PurevaxVaccine />} />
+        <Route path='/blog/first-vet-visit' element={<FirstVetVisit />} />
         <Route path='/bookappoinment/:id' element={<MakeAppointmentPage />} />
         <Route path='/confirmappoinment' element={<ConfirmAppoinment />} />
         <Route path='/contactus' element={<ContactUs />} />
