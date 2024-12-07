@@ -137,9 +137,9 @@ function Navbar() {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="btn btn-ghost text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded"
+                  className=" text-white bg-red-400 hover:bg-red-600 px-4 rounded "
                 >
-                  Logout
+                  <b>Logout</b>
                 </button>
               </li>
             </>
