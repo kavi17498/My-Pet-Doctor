@@ -4,15 +4,14 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-
-// Your web app's Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyCyFqE1HOirfrM9qwe-lf_Y0qP4a5G0RsI",
-  authDomain: "my-pet-doctor-fbb9d.firebaseapp.com",
-  projectId: "my-pet-doctor-fbb9d",
-  storageBucket: "my-pet-doctor-fbb9d.firebasestorage.app",
-  messagingSenderId: "806776072906",
-  appId: "1:806776072906:web:d2b13b2de77a9a9e20e233"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
