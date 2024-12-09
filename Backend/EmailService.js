@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 // Create a transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: '',
   auth: {
     user: '', // Replace with your email
     pass: ''     // Replace with your App Password
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = (to, subject, text) => {
   const mailOptions = {
-    from: 'kavindulakshan187@gmail.com',
+    from: '',
     to,
     subject,
     text
