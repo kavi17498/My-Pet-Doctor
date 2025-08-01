@@ -240,6 +240,8 @@ function Navbar() {
                 >
                   <FaSignOutAlt className="text-lg" />
                   <span>Logout</span>
+
+                  
                 </button>
               </div>
             )}
